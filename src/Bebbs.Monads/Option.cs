@@ -59,6 +59,26 @@ namespace Bebbs.Monads
                 throw exceptionFactory();
             }
         }
+
+        public static Option<T> OnSome<T>(this Option<T> source, Action<T> action)
+        {
+            if (source.IsSome)
+            {
+                action(source.Value);
+            }
+
+            return source;
+        }
+
+        public static Option<T> OnNone<T>(this Option<T> source, Action action)
+        {
+            if (source.IsNone)
+            {
+                action();
+            }
+
+            return source;
+        }
     }
 
     public struct Option<T>
