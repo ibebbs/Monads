@@ -39,6 +39,18 @@ namespace Bebbs.Monads
             return source.IsSuccess ? await OperationAsync(() => projection(source.Value)).ConfigureAwait(false) : Fallible<TResult>.Fail(source.Exception);
         }
 
+        public static void Do<T>(this Fallible<T> source, Action<T> onSuccess, Action<Exception> onFail)
+        {
+            if (source.IsSuccess)
+            {
+                onSuccess(source.Value);
+            }
+            else
+            {
+                onFail(source.Exception);
+            }
+        }
+
         public static T ValueOrThrow<T>(this Fallible<T> source)
         {
             if (source.IsSuccess)
