@@ -26,6 +26,30 @@ namespace Bebbs.Monads
         {
             return source.IsSome ? source.Value : value();
         }
+
+        public static Option<TValue> TryGetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source, TKey key)
+        {
+            if (source.TryGetValue(key, out TValue value))
+            {
+                return Option<TValue>.Some(value);
+            }
+            else
+            {
+                return Option<TValue>.None;
+            }
+        }
+
+        public static T ValueOrThrow<T>(this Option<T> source, Func<Exception> exceptionFactory)
+        {
+            if (source.IsSome)
+            {
+                return source.Value;
+            }
+            else
+            {
+                throw exceptionFactory();
+            }
+        }
     }
 
     public struct Option<T>
