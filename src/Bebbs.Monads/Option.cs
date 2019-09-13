@@ -36,6 +36,18 @@ namespace Bebbs.Monads
             return source.IsSome ? source.Value : value();
         }
 
+        public static async Task<T> CoalesceAsync<T>(this Option<T> source, Func<Task<T>> value)
+        {
+            return source.IsSome ? source.Value : await value().ConfigureAwait(false);
+        }
+
+        public static async Task<T> CoalesceAsync<T>(this Task<Option<T>> task, Func<Task<T>> value)
+        {
+            var source = await task.ConfigureAwait(false);
+
+            return source.IsSome ? source.Value : await value().ConfigureAwait(false);
+        }
+
         public static Option<TValue> TryGetValue<TKey, TValue>(this IReadOnlyDictionary<TKey, TValue> source, TKey key)
         {
             if (source.TryGetValue(key, out TValue value))
