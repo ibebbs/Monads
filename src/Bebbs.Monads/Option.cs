@@ -80,6 +80,18 @@ namespace Bebbs.Monads
             return source;
         }
 
+        public static async Task<Option<T>> OnSomeAsync<T>(this Task<Option<T>> task, Func<T, Task> action)
+        {
+            var source = await task.ConfigureAwait(false);
+
+            if (source.IsSome)
+            {
+                await action(source.Value).ConfigureAwait(false);
+            }
+
+            return source;
+        }
+
         public static Option<T> OnNone<T>(this Option<T> source, Action action)
         {
             if (source.IsNone)
@@ -92,6 +104,18 @@ namespace Bebbs.Monads
 
         public static async Task<Option<T>> OnNoneAsync<T>(this Option<T> source, Func<Task> action)
         {
+            if (source.IsNone)
+            {
+                await action().ConfigureAwait(false);
+            }
+
+            return source;
+        }
+
+        public static async Task<Option<T>> OnNoneAsync<T>(this Task<Option<T>> task, Func<Task> action)
+        {
+            var source = await task.ConfigureAwait(false);
+
             if (source.IsNone)
             {
                 await action().ConfigureAwait(false);
