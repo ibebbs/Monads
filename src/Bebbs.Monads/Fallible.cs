@@ -34,9 +34,19 @@ namespace Bebbs.Monads
             return source.IsSuccess ? Operation(() => projection(source.Value)) : Fallible<TResult>.Fail(source.Exception);
         }
 
+        public static Fallible<TResult> Select<TSource, TResult>(this Fallible<TSource> source, Func<TSource, Fallible<TResult>> projection)
+        {
+            return source.IsSuccess ? projection(source.Value) : Fallible<TResult>.Fail(source.Exception);
+        }
+
         public static async Task<Fallible<TResult>> SelectAsync<TSource, TResult>(this Fallible<TSource> source, Func<TSource, Task<TResult>> projection)
         {
             return source.IsSuccess ? await OperationAsync(() => projection(source.Value)).ConfigureAwait(false) : Fallible<TResult>.Fail(source.Exception);
+        }
+
+        public static async Task<Fallible<TResult>> SelectAsync<TSource, TResult>(this Fallible<TSource> source, Func<TSource, Task<Fallible<TResult>>> projection)
+        {
+            return source.IsSuccess ? await projection(source.Value).ConfigureAwait(false) : Fallible<TResult>.Fail(source.Exception);
         }
 
         public static void Do<T>(this Fallible<T> source, Action<T> onSuccess, Action<Exception> onFail)

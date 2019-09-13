@@ -11,10 +11,19 @@ namespace Bebbs.Monads
         {
             return source.IsSome ? Option<TResult>.Some(projection(source.Value)) : Option<TResult>.None;
         }
+        public static Option<TResult> Select<TSource, TResult>(this Option<TSource> source, Func<TSource, Option<TResult>> projection)
+        {
+            return source.IsSome ? projection(source.Value) : Option<TResult>.None;
+        }
 
         public static async Task<Option<TResult>> SelectAsync<TSource, TResult>(this Option<TSource> source, Func<TSource, Task<TResult>> projection)
         {
             return source.IsSome ? Option<TResult>.Some(await projection(source.Value).ConfigureAwait(false)) : Option<TResult>.None;
+        }
+
+        public static async Task<Option<TResult>> SelectAsync<TSource, TResult>(this Option<TSource> source, Func<TSource, Task<Option<TResult>>> projection)
+        {
+            return source.IsSome ? await projection(source.Value).ConfigureAwait(false) : Option<TResult>.None;
         }
 
         public static IEnumerable<T> Collect<T>(this IEnumerable<Option<T>> source)
