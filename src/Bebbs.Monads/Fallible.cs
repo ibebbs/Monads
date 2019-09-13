@@ -61,6 +61,26 @@ namespace Bebbs.Monads
             }
         }
 
+        public static Fallible<T> OnSuccess<T>(this Fallible<T> source, Action<T> action)
+        {
+            if (source.IsSuccess)
+            {
+                action(source.Value);
+            }
+
+            return source;
+        }
+
+        public static Fallible<T> OnFailure<T>(this Fallible<T> source, Action<Exception> action)
+        {
+            if (source.IsFailure)
+            {
+                action(source.Exception);
+            }
+
+            return source;
+        }
+
         public static T ValueOrThrow<T>(this Fallible<T> source)
         {
             if (source.IsSuccess)
@@ -102,7 +122,7 @@ namespace Bebbs.Monads
 
         public bool IsSuccess { get; }
 
-        public bool IsFail => !IsSuccess;
+        public bool IsFailure => !IsSuccess;
 
         public T Value { get; }
 
