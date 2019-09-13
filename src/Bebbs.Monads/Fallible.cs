@@ -71,7 +71,7 @@ namespace Bebbs.Monads
             return source;
         }
 
-        public static async Task<Fallible<T>> OnSuccess<T>(this Fallible<T> source, Func<T, Task> action)
+        public static async Task<Fallible<T>> OnSuccessAsync<T>(this Fallible<T> source, Func<T, Task> action)
         {
             if (source.IsSuccess)
             {
@@ -81,7 +81,17 @@ namespace Bebbs.Monads
             return source;
         }
 
-        public static async Task<Fallible<T>> OnFailure<T>(this Fallible<T> source, Func<Exception, Task> action)
+        public static Fallible<T> OnFailure<T>(this Fallible<T> source, Action<Exception> action)
+        {
+            if (source.IsFailure)
+            {
+                action(source.Exception);
+            }
+
+            return source;
+        }
+
+        public static async Task<Fallible<T>> OnFailureAsync<T>(this Fallible<T> source, Func<Exception, Task> action)
         {
             if (source.IsFailure)
             {
