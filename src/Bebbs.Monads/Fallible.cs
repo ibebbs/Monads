@@ -49,6 +49,27 @@ namespace Bebbs.Monads
             return source.IsSuccess ? await projection(source.Value).ConfigureAwait(false) : Fallible<TResult>.Fail(source.Exception);
         }
 
+        public static async Task<Fallible<TResult>> SelectAsync<TSource, TResult>(this Task<Fallible<TSource>> sourceTask, Func<TSource, TResult> projection)
+        {
+            var source = await sourceTask.ConfigureAwait(false);
+
+            return source.IsSuccess ? Fallible<TResult>.Success(projection(source.Value)) : Fallible<TResult>.Fail(source.Exception);
+        }
+
+        public static async Task<Fallible<TResult>> SelectAsync<TSource, TResult>(this Task<Fallible<TSource>> sourceTask, Func<TSource, Fallible<TResult>> projection)
+        {
+            var source = await sourceTask.ConfigureAwait(false);
+
+            return source.IsSuccess ? projection(source.Value) : Fallible<TResult>.Fail(source.Exception);
+        }
+
+        public static async Task<Fallible<TResult>> SelectAsync<TSource, TResult>(this Task<Fallible<TSource>> sourceTask, Func<TSource, Task<TResult>> projection)
+        {
+            var source = await sourceTask.ConfigureAwait(false);
+
+            return source.IsSuccess ? Fallible<TResult>.Success(await projection(source.Value).ConfigureAwait(false)) : Fallible<TResult>.Fail(source.Exception);
+        }
+
         public static async Task<Fallible<TResult>> SelectAsync<TSource, TResult>(this Task<Fallible<TSource>> sourceTask, Func<TSource, Task<Fallible<TResult>>> projection)
         {
             var source = await sourceTask.ConfigureAwait(false);
