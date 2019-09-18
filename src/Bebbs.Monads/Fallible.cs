@@ -164,6 +164,18 @@ namespace Bebbs.Monads
                 throw source.Exception;
             }
         }
+
+        public static T Coalesce<T>(this Fallible<T> source, Func<Exception, T> projection)
+        {
+            return source.IsSuccess ? source.Value : projection(source.Exception);
+        }
+
+        public async static Task<T> CoalesceAsync<T>(this Task<Fallible<T>> sourceTask, Func<Exception, T> projection)
+        {
+            var source = await sourceTask.ConfigureAwait(false);
+
+            return source.IsSuccess ? source.Value : projection(source.Exception);
+        }
     }
 
     public struct Fallible<T>
