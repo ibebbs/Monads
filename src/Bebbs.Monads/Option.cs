@@ -135,6 +135,21 @@ namespace Bebbs.Monads
 
             return source;
         }
+
+        public static Option<T> FirstOption<T>(this IEnumerable<T> source)
+        {
+            using (var enumerator = source.GetEnumerator())
+            {
+                if (enumerator.MoveNext())
+                {
+                    return Option<T>.Some(enumerator.Current);
+                }
+                else
+                {
+                    return Option<T>.None;
+                }
+            }
+        }
     }
 
     public struct Option<T>
