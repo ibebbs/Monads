@@ -41,6 +41,11 @@ namespace Bebbs.Monads
             return source.IsSome ? source.Value : value();
         }
 
+        public static Option<T> Coalesce<T>(this Option<T> source, Func<Option<T>> value)
+        {
+            return source.IsSome ? source : value();
+        }
+
         public static async Task<T> CoalesceAsync<T>(this Option<T> source, Func<Task<T>> value)
         {
             return source.IsSome ? source.Value : await value().ConfigureAwait(false);
