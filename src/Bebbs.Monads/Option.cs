@@ -7,6 +7,11 @@ namespace Bebbs.Monads
 {
     public static class Option
     {
+        public static Option<T> AsOption<T>(this T value)
+        {
+            return (value == default) ? Option<T>.None : Option<T>.Some(value);
+        }
+
         public static Option<TResult> Select<TSource,TResult>(this Option<TSource> source, Func<TSource, TResult> projection)
         {
             return source.IsSome ? Option<TResult>.Some(projection(source.Value)) : Option<TResult>.None;
