@@ -192,6 +192,10 @@ namespace Bebbs.Monads
 
     public interface IFallible
     {
+        bool IsSuccess { get; }
+
+        bool IsFailure { get; }
+
         Exception Exception { get; }
     }
 
