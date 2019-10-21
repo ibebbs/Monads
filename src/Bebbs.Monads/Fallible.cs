@@ -203,7 +203,16 @@ namespace Bebbs.Monads
         }
     }
 
-    public struct Fallible<T>
+    public interface IFallible
+    {
+        bool IsSuccess { get; }
+
+        bool IsFailure { get; }
+
+        Exception Exception { get; }
+    }
+
+    public struct Fallible<T> : IFallible
     {
         public static Fallible<T> Success(T result)
         {

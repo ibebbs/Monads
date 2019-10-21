@@ -7,6 +7,11 @@ namespace Bebbs.Monads
 {
     public static class Option
     {
+        public static Option<T> AsOption<T>(this T value)
+        {
+            return (value == default) ? Option<T>.None : Option<T>.Some(value);
+        }
+
         public static Option<TResult> Select<TSource,TResult>(this Option<TSource> source, Func<TSource, TResult> projection)
         {
             return source.IsSome ? Option<TResult>.Some(projection(source.Value)) : Option<TResult>.None;
@@ -34,6 +39,11 @@ namespace Bebbs.Monads
         public static T Coalesce<T>(this Option<T> source, Func<T> value)
         {
             return source.IsSome ? source.Value : value();
+        }
+
+        public static Option<T> Coalesce<T>(this Option<T> source, Func<Option<T>> value)
+        {
+            return source.IsSome ? source : value();
         }
 
         public static async Task<T> CoalesceAsync<T>(this Option<T> source, Func<Task<T>> value)
