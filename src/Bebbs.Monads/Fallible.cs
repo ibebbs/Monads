@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Bebbs.Monads
@@ -200,6 +202,16 @@ namespace Bebbs.Monads
             var source = await sourceTask.ConfigureAwait(false);
 
             return source.IsSuccess ? source : await projection(source.Exception);
+        }
+
+        public static IEnumerable<T> Successful<T>(this IEnumerable<Fallible<T>> source)
+        {
+            return source.Where(fallible => fallible.IsSuccess).Select(fallible => fallible.Value);
+        }
+
+        public static IEnumerable<Exception> Failed<T>(this IEnumerable<Fallible<T>> source)
+        {
+            return source.Where(fallible => fallible.IsFailure).Select(fallible => fallible.Exception);
         }
     }
 
