@@ -213,6 +213,16 @@ namespace Bebbs.Monads
         {
             return source.Where(fallible => fallible.IsFailure).Select(fallible => fallible.Exception);
         }
+
+        public static Fallible<TDest> Cast<TSource,TDest>(this Fallible<TSource> source) where TDest : TSource
+        {
+            return source.Select(value => Operation(() => (TDest)value));
+        }
+
+        public static IEnumerable<Fallible<TDest>> Cast<TSource,TDest>(this IEnumerable<Fallible<TSource>> source) where TDest : TSource
+        {
+            return source.Select(fallible => fallible.Cast<TSource, TDest>());
+        }
     }
 
     public interface IFallible
