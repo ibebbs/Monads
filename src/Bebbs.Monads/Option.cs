@@ -9,7 +9,7 @@ namespace Bebbs.Monads
     {
         public static Option<T> AsOption<T>(this T value)
         {
-            return (value == default) ? Option<T>.None : Option<T>.Some(value);
+            return EqualityComparer<T>.Default.Equals(value, default) ? Option<T>.None : Option<T>.Some(value);
         }
 
         public static Option<TResult> Select<TSource,TResult>(this Option<TSource> source, Func<TSource, TResult> projection)
